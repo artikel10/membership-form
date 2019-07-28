@@ -1,0 +1,103 @@
+html, body {
+	font-family: -apple-system, BlinkMacSystemFont, Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+	font-size: 15px;
+	line-height: 1.3;
+	color: black;
+	background-color: white;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+@media screen and (max-device-width: 640px) {
+	#sc-form {
+		max-width: 95% !important;
+	}
+}
+
+.bold { font-weight: bold; }
+
+.underline {
+	border: 0 !important;
+	border-bottom: 1px solid black !important;
+}
+
+input[type=text],
+select,
+.underline {
+	width: 100%;
+	height: 22px;
+	display: inline;
+}
+
+input[type="text"],
+select {
+	/* All browsers round select, iOS browsers round.. a lot?  */
+	border-radius: 0;
+
+	padding: 1px 0px;
+	border: solid 1px darkgrey;
+	border-collapse: collapse;
+}
+input[type="text"]:focus {
+	border: solid 3px darkgrey;
+}
+
+#sc-container {
+	/* The sanity checker is enabled via JS.
+	   This way the form can also work in tinfoil hat browsers.*/
+	display: none;
+
+	position: absolute;
+	z-index: 10;
+	transition: 0.5s;
+
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	overflow-y: scroll;
+}
+#sc-form {
+	margin: 0 auto;
+	padding: 1.5em 0;
+	max-width: 60em;
+	font-weight: 50;
+	color: black;
+}
+#sc-form input[type=text],
+#sc-form select,
+#sc-form button,
+#sc-form textarea   {
+	-webkit-appearance: none;
+	-moz-appearance : none;
+	height: 44px;
+	padding: 0 8px;
+	margin-top: -1px;
+}
+#sc-form label.sc-section {
+	margin-top: 9px;
+	margin-bottom: 2px;
+	display: block;
+}
+
+#show-form {
+	font-size: 18px;
+	color: white !important;
+	background-color: darkgrey !important;
+	width: 100%;
+	border: none;
+	border-radius: 0;
+	text-align: center;
+	text-decoration: none;
+}
+
+#sc-amount {
+	width: 5rem;
+}
+#amount {
+	width: 6rem;
+}
+.dinFoot {
+	height: auto !important;
+	font-size: 10pt;
+}

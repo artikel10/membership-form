@@ -1,0 +1,214 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<style type="text/css">
+{% include 'res/artikel10.css' %}
+{% include 'res/print-a4.css' %}
+	</style>
+	<script type="text/javascript">
+{% include 'res/form.js' %}
+
+		var paymentChangeHandler = function (event) {
+			var amount = document.getElementById('sc-amount');
+			switch (event.target['id']) {
+				case 'sc-regular':
+					amount.value = 60;
+					amount.min = 60;
+					amount.max = null;
+					break;
+				case 'sc-reduced':
+					amount.value = 30;
+					amount.min = 30;
+					amount.max = 30;
+					break;
+				case 'sc-corporate':
+					amount.value = 240;
+					amount.min = 240;
+					amount.max = null;
+					break;
+			}
+		};
+
+		window.onload = function() {
+			document.getElementById('sc-container').style.display = 'block';
+			document.getElementById('formpage').style.display = 'none';
+
+			var today = new Date();
+			document.getElementsByName('date')[0].value = today.toISOString().substring(0,10);
+
+			var payments = document.querySelectorAll('input[type=radio][name=sc-payment]');
+			payments.forEach(function (p) { p.addEventListener('change', paymentChangeHandler); });
+
+			document.getElementById('sc-form').addEventListener('submit', function(e) {
+				e.preventDefault();
+				syncFormFields('sc-form', 'formpage', 'sc-');
+
+				/* Create return address line.*/
+				var fields = [
+					document.getElementsByName('addr1')[0].value,
+					document.getElementsByName('addr2')[0].value,
+					document.getElementsByName('addr3')[0].value,
+					document.getElementsByName('addr4')[0].value,
+					document.getElementsByName('addr5')[0].value,
+				]
+				fields = fields.filter(function (x) { return x !== ''; });
+				var ret = document.getElementsByClassName('dinAddrRet')[0];
+				ret.innerHTML = fields.join(' • ');
+
+				/* Ensure format 0x1111222233334444 for PGP ID */
+				var pgp_id = document.getElementsByName('sc-pgp')[0].value.replace(/\s/g, '');
+				if (pgp_id.length == 16) { pgp_id = '0x' + pgp_id; }
+				document.getElementsByName('pgp')[0].value = pgp_id;
+
+				window.print();
+			});
+		}
+	</script>
+</head>
+<body>
+	<div id="sc-container">
+		<form id="sc-form">
+			<h3>Antrag auf Fördermitgliedschaft im Artikel10 e.V.</h3>
+
+			<p>Ich möchte <span class="bold">Fördermitglied im Artikel10 e.V.</span> werden und habe die Satzung gelesen.</p>
+
+			<input type="radio" id="sc-regular" name="sc-payment" value="regular" checked/>
+			<label for="sc-regular">Normaler Beitrag (mindestens <span class="bold">60€</span> pro Jahr)</label><br/>
+			<input type="radio" id="sc-reduced" name="sc-payment" value="reduced" />
+			<label for="sc-reduced">Ermäßigter Beitrag (<span class="bold">30€</span> pro Jahr)</label><br/>
+			<input type="radio" id="sc-corporate" name="sc-payment" value="corporate" />
+			<label for="sc-corporate">Juristische Person (mindestens <span class="bold">240€</span> pro Jahr)</label><br/>
+			<label for="sc-amount">Beitragshöhe:</label>
+			<input type="number" name="sc-amount" id="sc-amount" value="60" min="60" required />
+			<label for="sc-amount">Euro pro Jahr</label><br/>
+			<span>Den Beitrag werde ich jährlich im Voraus auf das Vereinskonto überweisen.</span>
+
+			<label for="addr1" class="sc-section">Name und Anschrift</label>
+			<input type="text" name="sc-addr1" maxlength="60" required>
+			<input type="text" name="sc-addr2" maxlength="60" required>
+			<input type="text" name="sc-addr3" maxlength="60" required>
+			<input type="text" name="sc-addr4" maxlength="60">
+			<input type="text" name="sc-addr5" maxlength="60">
+
+			<label for="sc-email"class="sc-section">E-Mail-Adresse</label>
+			<input type="text" name="sc-email" pattern=".+@.+\..+" maxlength="50" required>
+
+			<label for="sc-pgp" class="sc-section">Optional: PGP-Key ID</label>
+			<input type="text" name="sc-pgp" pattern="(0x)?[0-9a-fA-F]{16}([0-9a-fA-F]{24})?" maxlength="50" placeholder="0x1122334455667788" onblur="this.value = this.value.replace(/\s/g, '');">
+
+			<label class="sc-section"><input type="checkbox" name="sc-consent">Ich möchte über Vereinsaktivitäten per E-Mail informiert werden.</label>
+
+			<p>Den ausgefüllten und unterschriebenen Antrag bitte an die Vereinsadresse schicken!</p>
+
+			<button id="show-form" type="submit">Drucken</button>
+		</form>
+
+	</div>
+	<page size="A4" id="formpage">
+		<span class="falzt"></span>
+		<span class="falzb"></span>
+		<span class="hole"></span>
+
+		<div class="dinHead">
+			<h1>Artikel10 e.V.</h1>
+		</div>
+
+		<div class="dinAddrRet"></div>
+		<div class="dinAddrFwd">
+			Artikel10 e.V.<br/>Rückertstr. 41<br/>22089 Hamburg
+		</div>
+
+		<div class="dinCont">
+			<h3>Antrag auf Fördermitgliedschaft im Artikel10 e.V.</h3>
+			<form id="application" action="#">
+				<p>
+					Ich möchte <span class="bold">Fördermitglied im Artikel10 e.V.</span> werden und habe die Satzung gelesen.
+				</p>
+				<p>
+					<input type="radio" name="payment" value="regular" id="regular" onclick="return false;">
+					<label for="regular">Normaler Beitrag (mindestens <span class="bold">60€</span> pro Jahr)</label><br/>
+					<input type="radio" name="payment" value="reduced" id="reduced" onclick="return false;">
+					<label for="reduced">Ermäßigter Beitrag (<span class="bold">30€</span> pro Jahr)</label><br/>
+					<input type="radio" name="payment" value="corporate" id="corporate" onclick="return false;">
+					<label for="corporate">Juristische Person (mindestens <span class="bold">240€</span> pro Jahr)</label><br/>
+					<label for="amount">Beitragshöhe:</label>
+					<input type="number" name="amount" id="amount" onclick="return false;">
+					<label for="amount">Euro pro Jahr</label><br/>
+					<span>Den Beitrag werde ich jährlich im Voraus auf das Vereinskonto überweisen.</span>
+				<p>
+					<div id="personalInfo">
+						<div>
+							<div style="width: 100%">
+								<span>Name und Anschrift</span>
+								<input type="text" name="addr1">
+							</div>
+						</div>
+						<div>
+							<div style="width: 100%">
+								<input type="text" name="addr2">
+							</div>
+						</div>
+						<div>
+							<div style="width: 100%">
+								<input type="text" name="addr3">
+							</div>
+						</div>
+						<div>
+							<div style="width: 100%">
+								<input type="text" name="addr4">
+							</div>
+						</div>
+						<div>
+							<div style="width: 100%">
+								<input type="text" name="addr5">
+							</div>
+						</div>
+						<div>
+							<div style="width: 50%;">
+								<span>E-Mail-Adresse</span>
+								<input type="text" name="email">
+							</div>
+							<div style="width: 50%;">
+								<span>Optional: PGP-Key ID</span>
+								<input type="text" name="pgp">
+							</div>
+						</div>
+					</div>
+					<div>
+						<div style="width: 100%;">
+							<input type="checkbox" name="consent">
+							<span>Ich möchte über Vereinsaktivitäten per E-Mail informiert werden.</span>
+						</div>
+					</div>
+				</p>
+				<p>
+					<span class="bold">
+						Ich willige ein, dass Artikel10 e.V. die hier erhobenen personenbezogenen Daten
+						zum Zwecke der Mitgliederverwaltung und Kommunikation verarbeitet. Ich habe gemäß
+						der Datenschutzgrundverordnung das Recht auf Auskunft, Korrektur und Löschung meiner
+						personenbezogenen Daten, soweit sie nicht entsprechend steuerrechtlicher Vorgaben
+						aufbewahrt werden müssen.
+					</span>
+				</p>
+				<p style="height: 5px">
+					<div class="signfield" style="width: 20%">
+						<span class="underline"></span>
+						<input type="text" name="date" class="underline">
+						<span>Datum</span>
+					</div>
+					<div class="signfield" style="width: 80%">
+						<span class="underline"></span>
+						<input type="text" name="signature" class="underline" readonly>
+						<span>Unterschrift (bei Minderjährigen Unterschrift der Erziehungsberechtigten)</span>
+					</div>
+				</p>
+			</form>
+		</div>
+
+		<div class="dinFoot">
+			Artikel10 e.V. • Verein für digitalen Grundrechtsschutz • Amtsgericht Hamburg VR 24066
+		</div>
+	</page>
+</body>
+</html>
